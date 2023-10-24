@@ -1,0 +1,21 @@
+{
+  "name": "simple-video-player",
+  "version": "0.0.1",
+  "description": "A simple but comprehensive web video player",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --outDir lib && node ./script/build.js",
+    "dev": "node ./script/dev.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "0.19.4",
+    "typescript": "5.2.2"
+  }
+}

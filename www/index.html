@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example of the Simple Video Player </title>
+  <style>
+    .simple-player__raw-video {
+      display: none;
+    }
+  </style>
+  <script src="index.js"></script>
+</head>
+<body>
+  <div id="container"></div>
+  <button id="play-btn">play</button>
+  <script>
+    const player = new SimplePlayer('container');
+    const btn = document.getElementById('play-btn');
+    btn.onclick = () => {
+      player.video.play(['flower.webm']);
+    }
+  </script>
+</body>
+</html>

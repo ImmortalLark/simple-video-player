@@ -1,0 +1,1 @@
+export const VideoExtensionsRegexp = /(?=.)(mp4|ogg|avi|webm)$/;
