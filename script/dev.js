@@ -12,7 +12,7 @@ config.outdir = 'www/js';
 
   await esbuild.build({
     ...config,
-    outdir: './www'
+    outdir: './www',
   });
 
   const { port } = await ctx.serve({
