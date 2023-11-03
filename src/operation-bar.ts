@@ -49,41 +49,76 @@ class OperationBar {
     const playBtn = createGoogleIcon('play_arrow', 'simple-player__operation-bar__play');
     let status = false; // true - playing, false - paused
     playBtn.onclick = () => {
-      status = eventBus.emit(status ? 'operation_pause' : 'operation_play')[0];
+      status = eventBus.emit(status ? '_operation_pause' : '_operation_play')[0];
       playBtn.innerText =  status ? 'pause' : 'play_arrow';
     };
+
+    eventBus.on('_video_ended', () => {
+      status = false;
+      playBtn.innerText = 'play_arrow';
+    });
+
     return playBtn; 
   }
 
   private createVolumeAdjustmentButton() {
     const volumeAdjustmentContainer = createElementAndSetClassName('div', 'operation-bar__volume')
     const volumeBtn = createGoogleIcon('volume_up', 'simple-player__operation-bar__volume');
-    // volumeBtn.onclick = () => {
-
-    // };
-
     const volumeBar = createElementAndSetClassName('div', 'operation-bar__volume__bar');
+
+    const setVolume = (v: number) => {
+      volumeBar.style.background = `linear-gradient(to right, #f0b1b1 ${v * 100}%, #fff 0)`
+      eventBus.emit('_volume_change', v);
+    };
+  
+    let volume = 1;
     volumeBar.addEventListener('click', (e) => {
       const offsetX = e.offsetX;
-      const volume = offsetX / volumeBarWidth;
-      volumeBar.style.background = `linear-gradient(to right, #f0b1b1 ${volume * 100}%, #fff 0)`
-      eventBus.emit('volume_change', volume);
+      volume = offsetX / volumeBarWidth;
+      setVolume(volume);
+      // Set the icon of volume button
+      volumeBtn.innerText = volume ? 'volume_up' : 'volume_off';
     });
+
+    let volumeOff = false;
+    volumeBtn.onclick = () => {
+      volumeBtn.innerText = volumeOff ? 'volume_up' : 'volume_off';
+      setVolume(volumeOff ? volume : 0);
+      volumeOff = !volumeOff;
+    };
+
     appendChildren(volumeAdjustmentContainer, [volumeBtn, volumeBar]);
     return volumeAdjustmentContainer;
   }
 
   private createProgressBar() {
-    return createElementAndSetClassName('div', 'simple-player__operation-bar__progress');
+    const progressBar = createElementAndSetClassName('div', 'simple-player__operation-bar__progress');
+
+    let duration = 0;
+    eventBus.on('_duration_change', (payload) => duration = payload);
+    eventBus.on('_time_update', (currentTime) => {
+      // Update video playing progress
+      progressBar.style.background = `linear-gradient(to right, #f0b1b1 ${currentTime / duration * 100}%, #fff 0)`
+    });
+    // Monitor video progress adjustment
+    progressBar.onclick = (e) => {
+      const offsetX = e.offsetX;
+      const radio = offsetX / (e!.target as unknown as { offsetWidth: number }).offsetWidth
+      eventBus.emit('_seek', radio);
+    }
+    return progressBar;
   }
 
   private createSpeedAdjustmentMenu() {
     const speedContainer = createElementAndSetClassName('div', 'simple-player__operation-bar__speed');
+    const speed = createElementAndSetClassName('span', 'operation-bar__speed__value');
     speedContainer.innerHTML = `
       <span class="material-symbols-outlined icon-close">
         close
-      </span>1
+      </span>
     `;
+    speed.innerText = '1';
+    speedContainer.append(speed);
 
     const menu = createElementAndSetClassName('div', 'operation-bar__speed__menu');
     const menuItems = [ '2', '1.5', '1', '0.5'];
@@ -94,6 +129,10 @@ class OperationBar {
           close
         </span>${text}
       `;
+      item.onclick = () => {
+        speed.innerText = text;
+        eventBus.emit('_speed_adjust', +text);
+      };
       return item;
     }));
     speedContainer.appendChild(menu);
@@ -103,11 +142,26 @@ class OperationBar {
   }
 
   private createFullScreenButton() {
-    return createGoogleIcon('fullscreen', 'simple-player__operation-bar__fullscreen');
+    const icon = createGoogleIcon('fullscreen', 'simple-player__operation-bar__fullscreen');
+    let isFullscreen = false;
+    icon.onclick = () => {
+      isFullscreen = !isFullscreen;
+      eventBus.emit('_fullscreen', isFullscreen);
+    };
+
+    return icon;
   }
 
   private createPicInPicButton() {
-    return createGoogleIcon('picture_in_picture_alt', 'simple-player__operation-bar__pic-in-pic')
+    const icon = createGoogleIcon('picture_in_picture_alt', 'simple-player__operation-bar__pic-in-pic');
+    let isPicInPic = false;
+
+    icon.onclick = () => {
+      isPicInPic = !isPicInPic;
+      eventBus.emit('_pic-in-pic', isPicInPic);
+    };
+    
+    return icon;
   }
 }
 

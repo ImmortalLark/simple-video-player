@@ -55,21 +55,52 @@ class Video {
   }
 
   private initEventListener() {
-    eventBus.on('operation_play', () => {
+    eventBus.on('_operation_play', () => {
       this.play();
       return true;
     });
 
-    eventBus.on('operation_pause', () => {
+    eventBus.on('_operation_pause', () => {
       this.pause();
       return false;
     });
 
-    eventBus.on('volume_change', (volume) => {
+    eventBus.on('_volume_change', (volume) => {
       this.rawVideo.volume = volume;
       return false;
     });
+
+    eventBus.on('_seek', (radio) => {
+      const duration = this.rawVideo.duration;
+      const time = duration * radio;
+      this.rawVideo.currentTime = time;
+    });
+
+    eventBus.on('_speed_adjust', (speed) => {
+      this.rawVideo.playbackRate = speed;
+    });
+
+    eventBus.on('_pic-in-pic', (status) => {
+      if(status) {
+        this.rawVideo.requestPictureInPicture();
+      } else {
+        document.exitPictureInPicture();
+      }
+    });
+
+    this.rawVideo.ondurationchange = () => {
+      eventBus.emit('_duration_change', this.rawVideo.duration);
+    }
+
+    this.rawVideo.ontimeupdate = (e) => {
+      eventBus.emit('_time_update', this.rawVideo.currentTime);
+    }
+
+    this.rawVideo.onended = () => {
+      eventBus.emit('_video_ended');
+    }
   }
+
   private initCanvas() {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d')!; 

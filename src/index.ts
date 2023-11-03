@@ -3,6 +3,7 @@ import { appendChildren } from "./utils";
 import Video from "./video";
 import './styles.less';
 import { DefaultHeight, DefaultWidth } from "./constant";
+import eventBus from "./event-bus";
 
 type StyleType = {
   width: number;
@@ -27,6 +28,7 @@ class Player {
     
     this.initContainer(params.elementId);
     this.initCore();
+    this.initEventListeners();
   }
 
   // Create UI and initialize core functions such as play, pause, fast forward, etc.
@@ -60,6 +62,16 @@ class Player {
   private initOperationBar() {
     this.operationBar = new OperationBar();
     this.container.appendChild(this.operationBar.container);
+  }
+
+  private initEventListeners() {
+    eventBus.on('_fullscreen', (status) => {
+      if(status) {
+        this.container.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
   }
 }
 

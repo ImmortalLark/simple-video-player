@@ -1,8 +1,7 @@
 .simple-player {
   display: inline-flex;
   flex-direction: column;
-  background-color: #000;
-
+  justify-content: center;
 
   .flex-container--row {
     display: flex;
@@ -19,8 +18,31 @@
     justify-content: space-between;
     align-items: center;
 
+    position: relative;
+    padding-top: 4px;
+
     background-color: rgba(0, 0, 0, .8);
     color: #fff;
+
+    &__pic-in-pic {
+      padding: 0 2px;
+    }
+
+    &__fullscreen {
+      padding: 0 2px;
+    }
+
+    &__progress {
+      position: absolute;
+      width: 100%;
+      bottom: 24px;
+      height: 4px;
+      background-color: #fff;
+
+      transition: background .3s ease;
+      
+      cursor: pointer;
+    }
 
     .material-symbols-outlined {
       height: 24px;
@@ -38,7 +60,14 @@
       display: inline-flex;
       align-items: center;
 
-      width: 40px;
+      width: 50px;
+      cursor: pointer;
+
+      &:hover  {
+        .operation-bar__speed__menu {
+          display: inline-block;
+        }
+      }
     }
 
     .operation-bar__speed__menu {
@@ -48,9 +77,19 @@
       left: 0;
       
       display: none;
+      background-color: #333;
+
       .speed__menu__item {
         display: inline-flex;
         align-items: center;
+        border-bottom: 1px solid #fff;
+
+        width: 100%;
+        padding: 2px 0;
+
+        &:hover {
+          color: #ccc;
+        }
       }
     }
 
@@ -67,13 +106,12 @@
         width: 60px;
         height: 4px;
         cursor: pointer;
-        
+
         background-color: #fff;
         border-radius: 2px;
         background: linear-gradient(to right, #f0b1b1 100%, #fff 0);
       }
     }
+
   }
-
-
 }
