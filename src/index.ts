@@ -68,8 +68,10 @@ class Player {
     eventBus.on('_fullscreen', (status) => {
       if(status) {
         this.container.requestFullscreen();
+        this.container.className += ' simple-player--fullscreen'
       } else {
         document.exitFullscreen();
+        this.container.className = this.container.className.replace(' simple-player--fullscreen', '');
       }
     });
   }

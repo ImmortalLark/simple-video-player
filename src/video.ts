@@ -17,7 +17,7 @@ class Video {
     initialUrls?: string[];
   }) {
     this.width = params?.width || DefaultWidth;
-    this.height = params?.height || DefaultHeight;
+    this.height = params?.height || DefaultWidth * 9 /16;
 
     this.rawVideo = document.createElement('video');
     this.rawVideo.className = 'simple-player__raw-video';
